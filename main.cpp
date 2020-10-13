@@ -17,7 +17,7 @@
 double PV=0;
 char* t[6];
 int data_sensor[11][10];
-int data_avg[11];
+
 
 
 static void gpio_init(void){
@@ -70,6 +70,7 @@ static uint16_t adc_read(uint8_t p){
 }
 
 uint8_t baca_sensor(){
+  int data_avg[11];
   int temp = 0;
   PORTD |= SW_PIN_LEFT;
     for(int y=0;y<5;y++){
@@ -87,14 +88,15 @@ uint8_t baca_sensor(){
   PORTD &= ~SW_PIN_RIGHT;
 
   for(int y=0;y<11;y++){
-  for(int x=0;x<10;x++){
-    temp += data_sensor[y][x];
-  }
+    for(int x=0;x<10;x++){
+      temp += data_sensor[y][x];
+    }
   
-  temp /= 10;
-  data_avg[y] = temp;
-  temp = 0;
-}
+    temp /= 10;
+    data_avg[y] = temp;
+    temp = 0;
+  }
+  return data_avg[11];
 }
 
 uint16_t map_sensor (){
@@ -209,17 +211,13 @@ int main(void){
 
   while(1){
     // break;
-    // map_case();
-    // pid();
-    // for (x=0;x<6;x++){
-    //   uart_transmits(t[x]);
-    //   uart_transmit(';');
-    // }
-    for(int x=0;x<11;x++){
-      itoa(data_avg[x], tampil, 10);
-      uart_transmits(tampil);
+    map_case();
+    pid();
+    for (int x=0;x<6;x++){
+      uart_transmits(t[x]);
       uart_transmit(';');
     }
+
     uart_transmits((char*)"\r\n");// carriege return // newline
   }
 }
