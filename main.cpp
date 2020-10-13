@@ -205,7 +205,6 @@ int main(void){
   gpio_init();
   uart_init();
   gpio_write((LED_PIN_LEFT | LED_PIN_RIGHT),1);
-  char tampil[10];
   // uart_transmit(((PIND & (1<<6)) + 48));
 
 
