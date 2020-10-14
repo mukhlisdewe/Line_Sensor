@@ -16,7 +16,6 @@
 
 int data_sensor[11][10];
 int data_avg[11];
-char* data_str[11];
 
 static void gpio_init(void){
   DDRD |= LED_PIN_LEFT | LED_PIN_RIGHT | SW_PIN_LEFT | SW_PIN_RIGHT;
@@ -103,13 +102,13 @@ int main(void){
   gpio_write((LED_PIN_LEFT | LED_PIN_RIGHT),1);
   // uart_transmit(((PIND & (1<<6)) + 48));
 
+  char data_str[10];
+  
   while(1){
     // break;
-    for(uint8_t x=0;x<11;x++)
-      itoa(baca_sensor(x), data_str[x], 10);
-    
     for (uint8_t x=0;x<11;x++){
-      uart_transmits(data_str[x]);
+      itoa(baca_sensor(y), data_str, 10);
+      uart_transmits(data_str);
       uart_transmit(';');
     }
 
