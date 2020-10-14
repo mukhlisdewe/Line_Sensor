@@ -16,9 +16,6 @@
 
 double PV=0;
 char* t[6];
-int data_sensor[11][10];
-
-
 
 static void gpio_init(void){
   DDRD |= LED_PIN_LEFT | LED_PIN_RIGHT | SW_PIN_LEFT | SW_PIN_RIGHT;
@@ -69,7 +66,8 @@ static uint16_t adc_read(uint8_t p){
   return (adc_avg/10);
 }
 
-uint8_t baca_sensor(){
+static uint8_t baca_sensor(uint8_t index){
+  int data_sensor[11][10];
   int data_avg[11];
   int temp = 0;
   PORTD |= SW_PIN_LEFT;
@@ -80,7 +78,7 @@ uint8_t baca_sensor(){
     }
   PORTD &= ~SW_PIN_LEFT;
   PORTD |= SW_PIN_RIGHT;
-    for(int y=0;y<6;y++){
+    for(int y=5;y<11;y++){
       for(int x=0;x<10;x++){
         data_sensor[y][x] = adc_read(y);
       }
@@ -96,27 +94,28 @@ uint8_t baca_sensor(){
     data_avg[y] = temp;
     temp = 0;
   }
-  return data_avg[11];
+  
+  return data_avg[index];
 }
 
-uint16_t map_sensor (){
+static uint16_t map_sensor (){
   uint16_t sensor=0;
-  if(baca_sensor()==0)sensor=sensor |0b10000000000;
-  if(baca_sensor()==0)sensor=sensor |0b01000000000;
-  if(baca_sensor()==0)sensor=sensor |0b00100000000;
-  if(baca_sensor()==0)sensor=sensor |0b00010000000;
-  if(baca_sensor()==0)sensor=sensor |0b00001000000;
-  if(baca_sensor()==0)sensor=sensor |0b00000100000;
-  if(baca_sensor()==0)sensor=sensor |0b00000000001;
-  if(baca_sensor()==0)sensor=sensor |0b00000000010;
-  if(baca_sensor()==0)sensor=sensor |0b00000000100;
-  if(baca_sensor()==0)sensor=sensor |0b00000001000;
-  if(baca_sensor()==0)sensor=sensor |0b00000010000;
+  if(baca_sensor(0)==0)sensor=sensor |0b10000000000;
+  if(baca_sensor(1)==0)sensor=sensor |0b01000000000;
+  if(baca_sensor(2)==0)sensor=sensor |0b00100000000;
+  if(baca_sensor(3)==0)sensor=sensor |0b00010000000;
+  if(baca_sensor(4)==0)sensor=sensor |0b00001000000;
+  if(baca_sensor(5)==0)sensor=sensor |0b00000100000;
+  if(baca_sensor(4)==0)sensor=sensor |0b00000000001;
+  if(baca_sensor(3)==0)sensor=sensor |0b00000000010;
+  if(baca_sensor(2)==0)sensor=sensor |0b00000000100;
+  if(baca_sensor(1)==0)sensor=sensor |0b00000001000;
+  if(baca_sensor(0)==0)sensor=sensor |0b00000010000;
 
   return sensor;
 }
 
-int map_case(){
+static uint16_t map_case(){
   switch(map_sensor()) {
   
     case 0b00000000001  :   PV= 30; break;
@@ -151,7 +150,7 @@ int map_case(){
       return PV;
 }
 
-void pid (){
+static void pid(){
     char temp[10];
     uint16_t M1, M2;
     double error=0, setpoint=0, error1=0, outPID=0;
