@@ -16,6 +16,8 @@
 
 double PV=0;
 char* t[6];
+int data_sensor[11][10];
+int data_avg[11];
 
 static void gpio_init(void){
   DDRD |= LED_PIN_LEFT | LED_PIN_RIGHT | SW_PIN_LEFT | SW_PIN_RIGHT;
@@ -67,8 +69,6 @@ static uint16_t adc_read(uint8_t p){
 }
 
 static uint8_t baca_sensor(uint8_t index){
-  int data_sensor[11][10];
-  int data_avg[11];
   int temp = 0;
   PORTD |= SW_PIN_LEFT;
     for(int y=0;y<5;y++){
