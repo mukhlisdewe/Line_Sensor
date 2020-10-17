@@ -78,7 +78,7 @@ static uint8_t baca_sensor(uint8_t index){
   PORTD |= SW_PIN_RIGHT;
     for(int y=5;y<11;y++){
       for(int x=0;x<10;x++){
-        data_sensor[y][x] = adc_read(y);
+        data_sensor[y][x] = adc_read(y-5);
       }
     }
   PORTD &= ~SW_PIN_RIGHT;
