@@ -71,7 +71,7 @@ static uint16_t adc_read(uint8_t p){
 static uint8_t baca_sensor(uint8_t index){
   int temp = 0;
   PORTD |= SW_PIN_LEFT;
-    for(int y=0;y<5;y++){
+    for(int y=0;y<6;y++){
       for(int x=0;x<10;x++){
         data_sensor[y][x] = adc_read(y);
       }
@@ -80,7 +80,7 @@ static uint8_t baca_sensor(uint8_t index){
   PORTD |= SW_PIN_RIGHT;
     for(int y=5;y<11;y++){
       for(int x=0;x<10;x++){
-        data_sensor[y][x] = adc_read(y);
+        data_sensor[y][x] = adc_read(y-5);
       }
     }
   PORTD &= ~SW_PIN_RIGHT;
@@ -206,16 +206,24 @@ int main(void){
   gpio_write((LED_PIN_LEFT | LED_PIN_RIGHT),1);
   // uart_transmit(((PIND & (1<<6)) + 48));
 
-
+  char data_str[10];
   while(1){
     // break;
-    map_case();
-    pid();
-    for (int x=0;x<6;x++){
-      uart_transmits(t[x]);
+    // map_case();
+    // pid();
+    
+    // Nggo nampilke data PID karo error
+    // for (int x=0;x<6;x++){
+    //   uart_transmits(t[x]);
+    //   uart_transmit(';');
+    // }
+
+    // Nggo nampilke nilai sensor
+    for (uint8_t x=0;x<11;x++){
+      itoa(baca_sensor(x), data_str, 10);
+      uart_transmits(data_str);
       uart_transmit(';');
     }
-
     uart_transmits((char*)"\r\n");// carriege return // newline
   }
 }
